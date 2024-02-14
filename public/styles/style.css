@@ -1,0 +1,24 @@
+:root {
+    /*text sizes*/
+    --headTitleSize: 2em;
+    --titleSize: 1.5em;
+    --subTitleSize: 1.5em;
+    --textSize: 1em;
+    
+    /*font properties*/
+    --textFont: 'Gilroy-Regular', sans-serif;
+    
+    /*colors*/
+    --mainColor: #ABCDDB;
+    --secundaryColor: #ffff;
+    --tertairyColor: #D7E6EC;
+    --textColor: #000000;
+
+    --margin: rem
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
