@@ -14,11 +14,16 @@
     --tertairyColor: #D7E6EC;
     --textColor: #000000;
 
-    --margin: rem
+    
 }
 
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+body {
+    line-height: 1.35;
+    font-family: 'Gilroy-Regular', sans-serif;
 }
