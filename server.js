@@ -34,7 +34,7 @@ app.get('/', function (request, response) {
     // Render index.ejs uit de views map en geef de opgehaalde data mee als variabele, genaamd persons
     response.render('index', {
       persons: apiData.data, 
-      squads: squadData.data
+      squads: squadData.data,
       messages: messages 
     })
   })
@@ -66,28 +66,28 @@ app.listen(app.get('port'), function () {
   console.log(`Application started on http://localhost:${app.get('port')}`)
 })
 //zorg dat werken met request data makkelijker wordt
-app.use(express.urlencoded ({extended: true}))
+app.use(express.urlencoded ({extended: true}));
 
-app.get('/search', function (request, response) {
-  const searchData = request.query.search.toLowerCase();
-  fetchJson(apiUrl + '/person').then((apiData) => {
-    const filteredPersons = apiData.data.filter(person => {
-      return person.name.toLowerCase().includes(searchData) || person.surname.toLowerCase().includes(searchData);
-    });
+// app.get('/search', function (request, response) {
+//   const searchData = request.query.search.toLowerCase();
+//   fetchJson(apiUrl + '/person').then((apiData) => {
+//     const filteredPersons = apiData.data.filter(person => {
+//       return person.name.toLowerCase().includes(searchData) || person.surname.toLowerCase().includes(searchData);
+//     });
 
-    if (searchData === '') {
-      return response.send(`<script>alert("Je kan niet zoeken naar niks!"); window.location.href = "/";</script>`);
-    } else if (filteredPersons.length === 0) {
-      return response.send(`<script>alert("Er zit niemand met '${searchData}' in de naam in squad D, E of F."); window.location.href = "/";</script>`);
-    } else {
-      response.render('search', { 
-        person: apiData.data,
-        persons: filteredPersons, 
-        search: searchData
-      });
-    }
-  }).catch(error => {
-    console.error('Error:', error);
-    response.status(500).send('Internal Server Error');
-  });
-});
+//     if (searchData === '') {
+//       return response.send(`<script>alert("Je kan niet zoeken naar niks!"); window.location.href = "/";</script>`);
+//     } else if (filteredPersons.length === 0) {
+//       return response.send(`<script>alert("Er zit niemand met '${searchData}' in de naam in squad D, E of F."); window.location.href = "/";</script>`);
+//     } else {
+//       response.render('search', { 
+//         person: apiData.data,
+//         persons: filteredPersons, 
+//         search: searchData
+//       });
+//     }
+//   }).catch(error => {
+//     console.error('Error:', error);
+//     response.status(500).send('Internal Server Error');
+//   });
+// });

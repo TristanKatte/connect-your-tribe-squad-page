@@ -7,6 +7,21 @@
   </form>
 </details>
 
+<h2>Huidige berichten</h2>
+<ul>
+<% messages.forEach(message => { %>
+    <li><%= message %></li>
+    <% }) %>
+</ul>
+
+<form method="POST" action="/">
+<label>
+    Berichtje:
+    <textarea required name="bericht"></textarea>
+</label>
+<button type="submit">Verzend bericht</button>
+</form>
+
 
 <section class="button_container">
   <a href="/squad/3">D</a>
