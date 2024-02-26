@@ -9,12 +9,11 @@
     --textFont: 'Gilroy-Regular', sans-serif;
     
     /*colors*/
-    --mainColor: #ABCDDB;
-    --secundaryColor: #ffff;
-    --tertairyColor: #D7E6EC;
-    --textColor: #000000;
-
-    
+    --mainColor: #00868c;
+    --SecundaryColor: #00937a;
+    --TertairyColor: #66a281;
+    --QuartaireColor: #8bc6ac;
+    --QuadrupleColor: #99d5cb;
 }
 
 * {
@@ -26,4 +25,5 @@
 body {
     line-height: 1.35;
     font-family: 'Gilroy-Regular', sans-serif;
+    background-color: var(--mainColor);
 }

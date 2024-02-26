@@ -22,6 +22,8 @@ app.set('views', './views')
 // Gebruik de map 'public' voor statische resources, zoals stylesheets, afbeeldingen en client-side JavaScript
 app.use(express.static('public'))
 
+const messages = []
+
 // Maak een GET route voor de index
 app.get('/', function (request, response) {
   // Haal alle personen uit de WHOIS API op
@@ -30,12 +32,18 @@ app.get('/', function (request, response) {
     // Je zou dat hier kunnen filteren, sorteren, of zelfs aanpassen, voordat je het doorgeeft aan de view
 
     // Render index.ejs uit de views map en geef de opgehaalde data mee als variabele, genaamd persons
-    response.render('index', {persons: apiData.data, squads: squadData.data})
+    response.render('index', {
+      persons: apiData.data, 
+      squads: squadData.data
+      messages: messages 
+    })
   })
 })
 
 // Maak een POST route voor de index
 app.post('/', function (request, response) {
+  //Voeg het nieuwe bericht toe aan de messages array
+  messages.push(request.body.bericht)
   // Er is nog geen afhandeling van POST, redirect naar GET op /
   response.redirect(303, '/')
 })
@@ -57,3 +65,29 @@ app.listen(app.get('port'), function () {
   // Toon een bericht in de console en geef het poortnummer door
   console.log(`Application started on http://localhost:${app.get('port')}`)
 })
+//zorg dat werken met request data makkelijker wordt
+app.use(express.urlencoded ({extended: true}))
+
+app.get('/search', function (request, response) {
+  const searchData = request.query.search.toLowerCase();
+  fetchJson(apiUrl + '/person').then((apiData) => {
+    const filteredPersons = apiData.data.filter(person => {
+      return person.name.toLowerCase().includes(searchData) || person.surname.toLowerCase().includes(searchData);
+    });
+
+    if (searchData === '') {
+      return response.send(`<script>alert("Je kan niet zoeken naar niks!"); window.location.href = "/";</script>`);
+    } else if (filteredPersons.length === 0) {
+      return response.send(`<script>alert("Er zit niemand met '${searchData}' in de naam in squad D, E of F."); window.location.href = "/";</script>`);
+    } else {
+      response.render('search', { 
+        person: apiData.data,
+        persons: filteredPersons, 
+        search: searchData
+      });
+    }
+  }).catch(error => {
+    console.error('Error:', error);
+    response.status(500).send('Internal Server Error');
+  });
+});
