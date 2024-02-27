@@ -28,6 +28,17 @@
   <a href="/squad/4">E</a>
   <a href="/squad/5">F</a>
 </section>
+
+<section class="content-container">
+  <ul class="content">
+
+    <% persons.forEach(person => { %>
+        <li class="squadpage"><a href="./person/<%= person.id %>"><%= person.name %></a></li>
+    <% }) %>
+</ul>
+
+
+</section>
 <!-- <h2>Students</h2>
 <ul>
   <% persons.forEach(person => { %>
