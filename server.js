@@ -1,3 +1,5 @@
+/***Express ***/
+
 // Importeer het npm pakket express uit de node_modules map
 import express from 'express'
 
@@ -22,12 +24,33 @@ app.set('views', './views')
 // Gebruik de map 'public' voor statische resources, zoals stylesheets, afbeeldingen en client-side JavaScript
 app.use(express.static('public'))
 
+// Stel het poortnummer in waar express op moet gaan luisteren
+app.set('port', process.env.PORT || 8000)
+
+// Start express op, haal daarbij het zojuist ingestelde poortnummer op
+app.listen(app.get('port'), function () {
+  // Toon een bericht in de console en geef het poortnummer door
+  console.log(`Application started on http://localhost:${app.get('port')}`)
+})
+
+//zorg dat werken met request data makkelijker wordt
+app.use(express.urlencoded ({extended: true}))
+
+
+
+/***Routes & Data ***/
+
+// Base URL
+const  baseUrl = 'https://fdnd.directus.app/items'
+
+
+// lege array voor berichten
 const messages = []
 
 // Maak een GET route voor de index
 app.get('/', function (request, response) {
   // Haal alle personen uit de WHOIS API op
-  fetchJson(apiUrl + '/person').then((apiData) => {
+  fetchJson(baseUrl + '/person').then((apiData) => {
     // apiData bevat gegevens van alle personen uit alle squads
     // Je zou dat hier kunnen filteren, sorteren, of zelfs aanpassen, voordat je het doorgeeft aan de view
 
@@ -51,43 +74,35 @@ app.post('/', function (request, response) {
 // Maak een GET route voor een detailpagina met een request parameter id
 app.get('/person/:id', function (request, response) {
   // Gebruik de request parameter id en haal de juiste persoon uit de WHOIS API op
-  fetchJson(apiUrl + '/person/' + request.params.id).then((apiData) => {
+  fetchJson(baseUrl + '/person/' + request.params.id).then((apiData) => {
     // Render person.ejs uit de views map en geef de opgehaalde data mee als variable, genaamd person
     response.render('person', {person: apiData.data, squads: squadData.data})
   })
 })
 
-// Stel het poortnummer in waar express op moet gaan luisteren
-app.set('port', process.env.PORT || 8000)
+// Maak een POST route voor een detailpagina
 
-// Start express op, haal daarbij het zojuist ingestelde poortnummer op
-app.listen(app.get('port'), function () {
-  // Toon een bericht in de console en geef het poortnummer door
-  console.log(`Application started on http://localhost:${app.get('port')}`)
-})
-//zorg dat werken met request data makkelijker wordt
-app.use(express.urlencoded ({extended: true}));
 
-// app.get('/search', function (request, response) {
-//   const searchData = request.query.search.toLowerCase();
-//   fetchJson(apiUrl + '/person').then((apiData) => {
-//     const filteredPersons = apiData.data.filter(person => {
-//       return person.name.toLowerCase().includes(searchData) || person.surname.toLowerCase().includes(searchData);
-//     });
+app.get('/search', function (request, response) {
+  const searchData = request.query.search.toLowerCase();
+  fetchJson(apiUrl + '/person').then((apiData) => {
+    const filteredPersons = apiData.data.filter(person => {
+      return person.name.toLowerCase().includes(searchData) || person.surname.toLowerCase().includes(searchData);
+    });
 
-//     if (searchData === '') {
-//       return response.send(`<script>alert("Je kan niet zoeken naar niks!"); window.location.href = "/";</script>`);
-//     } else if (filteredPersons.length === 0) {
-//       return response.send(`<script>alert("Er zit niemand met '${searchData}' in de naam in squad D, E of F."); window.location.href = "/";</script>`);
-//     } else {
-//       response.render('search', { 
-//         person: apiData.data,
-//         persons: filteredPersons, 
-//         search: searchData
-//       });
-//     }
-//   }).catch(error => {
-//     console.error('Error:', error);
-//     response.status(500).send('Internal Server Error');
-//   });
-// });
+    if (searchData === '') {
+      return response.send(`<script>alert("Je kan niet zoeken naar niks!"); window.location.href = "/";</script>`);
+    } else if (filteredPersons.length === 0) {
+      return response.send(`<script>alert("Er zit niemand met '${searchData}' in de naam in squad D, E of F."); window.location.href = "/";</script>`);
+    } else {
+      response.render('search', { 
+        person: apiData.data,
+        persons: filteredPersons, 
+        search: searchData
+      });
+    }
+  }).catch(error => {
+    console.error('Error:', error);
+    response.status(500).send('Internal Server Error');
+  });
+});
